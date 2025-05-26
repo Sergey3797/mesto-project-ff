@@ -1,3 +1,5 @@
+import '../pages/index.css';
+import {initialCards} from './cards.js';
 function createCard(dataCard, deleteCard){
   const cardTemplate = document.querySelector('#card-template').content;
   const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
