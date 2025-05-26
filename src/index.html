@@ -18,10 +18,10 @@
       <div class="profile__image" style="background-image: url(<%=require('./images/avatar.jpg')%>)"></div>
       <div class="profile__info">
         <h1 class="profile__title">Жак-Ив Кусто</h1>
-        <button class="profile__edit-button" type="button"></button>
+        <button class="profile__edit-button" type="button" id="edit-button"></button>
         <p class="profile__description">Исследователь океана</p>
       </div>
-      <button class="profile__add-button" type="button"></button>
+      <button class="profile__add-button" type="button" id="add-button"></button>
     </section>
     <section class="places page__section">
       <ul class="places__list">
@@ -33,9 +33,9 @@
       © 2021 Mesto Russia
     </p>
   </footer>
-  <div class="popup popup_type_edit">
+  <div class="popup popup_type_edit" id="profile-popup">
     <div class="popup__content">
-      <button type="button" class="popup__close"></button>
+      <button type="button" class="popup__close" id="profile-popup-close-button"></button>
       <h3 class="popup__title">Редактировать профиль</h3>
       <form class="popup__form" name="edit-profile">
         <input type="text" name="name" class="popup__input popup__input_type_name" placeholder="Имя" required>
@@ -44,9 +44,9 @@
       </form>
     </div>
   </div>
-  <div class="popup popup_type_new-card">
+  <div class="popup popup_type_new-card" id="new-card-popup">
     <div class="popup__content">
-      <button type="button" class="popup__close"></button>
+      <button type="button" class="popup__close" id="new-card-popup-close-button"></button>
       <h3 class="popup__title">Новое место</h3>
       <form class="popup__form" name="new-place">
         <input type="text" name="place-name" class="popup__input popup__input_type_card-name" placeholder="Название" required>
@@ -55,9 +55,9 @@
       </form>
     </div>
   </div>
-  <div class="popup popup_type_image">
+  <div class="popup popup_type_image" id="image-popup">
     <div class="popup__content popup__content_content_image">
-      <button type="button" class="popup__close"></button>
+      <button type="button" class="popup__close" id="image-popup-close-button"></button>
       <img src="" alt="" class="popup__image">
       <p class="popup__caption"></p>
     </div>
