@@ -24,3 +24,22 @@ export const initialCards = [
       link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg",
     }
 ];
+
+export function createCard(dataCard, deleteCard){
+  const cardTemplate = document.querySelector('#card-template').content;
+  const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
+
+  const cardImage = cardElement.querySelector('.card__image');
+  const cardTitle = cardElement.querySelector('.card__title');
+  const deleteButton = cardElement.querySelector('.card__delete-button');
+
+  cardImage.src = dataCard.link;
+  cardImage.alt = dataCard.name;
+  cardTitle.textContent = dataCard.name;
+
+  deleteButton.addEventListener('click', function(){
+    deleteCard(cardElement);
+  });
+  
+  return cardElement;
+};

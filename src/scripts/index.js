@@ -1,23 +1,5 @@
 import '../pages/index.css';
-import {initialCards} from './cards.js';
-function createCard(dataCard, deleteCard){
-  const cardTemplate = document.querySelector('#card-template').content;
-  const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
-
-  const cardImage = cardElement.querySelector('.card__image');
-  const cardTitle = cardElement.querySelector('.card__title');
-  const deleteButton = cardElement.querySelector('.card__delete-button');
-
-  cardImage.src = dataCard.link;
-  cardImage.alt = dataCard.name;
-  cardTitle.textContent = dataCard.name;
-
-  deleteButton.addEventListener('click', function(){
-    deleteCard(cardElement);
-  });
-  
-  return cardElement;
-};
+import {initialCards, createCard} from '../components/cards.js';
 
 function removeCard(element) {
   element.remove();
