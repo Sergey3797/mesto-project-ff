@@ -41,6 +41,32 @@ imagePopupCloseButton.addEventListener('click', function() {
   closeModal(imagePopup);
 });
 
+profilePopup.addEventListener('click', function(event) {
+  if (event.target === profilePopup) {
+    closeModal(profilePopup);
+  }
+});
+
+newCardPopup.addEventListener('click' ,function(event) {
+  if (event.target === newCardPopup) {
+    closeModal(newCardPopup);
+  }
+});
+
+imagePopup.addEventListener('click', function(event) {
+  if (event.target === imagePopup) {
+    closeModal(imagePopup);
+  }
+});
+
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    closeModal(profilePopup);
+    closeModal(newCardPopup);
+    closeModal(imagePopup);
+  }
+});
+
 
 
 
