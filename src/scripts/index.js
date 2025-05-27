@@ -54,33 +54,33 @@ profilePopupCloseButton.addEventListener('click', () => {
   closeModal(profilePopup);
 });
 
-newCardPopupCloseButton.addEventListener('click', function() {
+newCardPopupCloseButton.addEventListener('click', () => {
   closeModal(newCardPopup);
 });
 
-imagePopupCloseButton.addEventListener('click', function() {
+imagePopupCloseButton.addEventListener('click', () => {
   closeModal(imagePopup);
 });
 
-profilePopup.addEventListener('click', function(event) {
+profilePopup.addEventListener('click', (event) => {
   if (event.target === profilePopup) {
     closeModal(profilePopup);
   }
 });
 
-newCardPopup.addEventListener('click' ,function(event) {
+newCardPopup.addEventListener('click' ,(event) => {
   if (event.target === newCardPopup) {
     closeModal(newCardPopup);
   }
 });
 
-imagePopup.addEventListener('click', function(event) {
+imagePopup.addEventListener('click', (event) => {
   if (event.target === imagePopup) {
     closeModal(imagePopup);
   }
 });
 
-document.addEventListener('keydown', function(event) {
+document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') {
     closeModal(profilePopup);
     closeModal(newCardPopup);

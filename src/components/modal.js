@@ -1,8 +1,8 @@
-export function openModal(popupElement) {
+export const openModal = (popupElement) => {
   popupElement.classList.add('popup_is-opened');
 };
 
-export function closeModal(popupElement) {
+export const closeModal = (popupElement) => {
   popupElement.classList.remove('popup_is-opened');
 };
 
