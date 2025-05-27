@@ -1,5 +1,5 @@
 import '../pages/index.css';
-import {initialCards, createCard} from '../components/cards.js';
+import {initialCards, createCard, removeCard, likeCard} from '../components/cards.js';
 import {openModal,closeModal } from '../components/modal.js';
 
 const placesList = document.querySelector ('.places__list');
@@ -11,25 +11,46 @@ const addButton = document.querySelector('#add-button');
 const profilePopupCloseButton = document.querySelector('#profile-popup-close-button');
 const newCardPopupCloseButton = document.querySelector('#new-card-popup-close-button');
 const imagePopupCloseButton = document.querySelector('#image-popup-close-button');
+const profileTitle = document.querySelector('#profile-title');
+const profileDescription = document.querySelector('#profile-description');
+const profileFormElement = profilePopup.querySelector('.popup__form');
+const nameInput = profilePopup.querySelector('.popup__input_type_name');
+const jobInput = profilePopup.querySelector('.popup__input_type_description');
+const newCardFormElement = newCardPopup.querySelector('.popup__form');
+const cardNameInput = newCardPopup.querySelector('.popup__input_type_card-name');
+const cardLinkInput = newCardPopup.querySelector('.popup__input_type_url');
+const imagePopupImg = imagePopup.querySelector('.popup__image');
+const imagePopupCaption = imagePopup.querySelector('.popup__caption');
 
-function removeCard(element) {
-  element.remove();
-};
+const handleCardImageClick = (link, caption, alt) => {
+  imagePopupImg.src = link;
+  imagePopupImg.alt = alt;
+  imagePopupCaption.textContent = caption;
+  openModal(imagePopup);
+}
+
+
 
 initialCards.forEach(function(item){
-  const newCardElement = createCard(item, removeCard);
+  const newCardElement = createCard(item, removeCard, likeCard, handleCardImageClick);
   placesList.append(newCardElement);
 });
 
-editButton.addEventListener('click', function() {
+profilePopup.classList.add('popup_is-animated');
+newCardPopup.classList.add('popup_is-animated');
+imagePopup.classList.add('popup_is-animated');
+
+editButton.addEventListener('click', () => {
+  nameInput.value = profileTitle.textContent;
+  jobInput.value = profileDescription.textContent;
   openModal(profilePopup);
 });
 
-addButton.addEventListener('click', function() {
+addButton.addEventListener('click', () => {
   openModal(newCardPopup);
 });
 
-profilePopupCloseButton.addEventListener('click', function() {
+profilePopupCloseButton.addEventListener('click', () => {
   closeModal(profilePopup);
 });
 
@@ -67,6 +88,25 @@ document.addEventListener('keydown', function(event) {
   }
 });
 
+const handleProfileFormSubmit = (evt) => {
+  evt.preventDefault(); 
+  profileTitle.textContent = nameInput.value;
+  profileDescription.textContent = jobInput.value;
+  closeModal(profilePopup);
+}
 
+profileFormElement.addEventListener('submit', handleProfileFormSubmit);
 
+const handleNewCardFormSubmit = (evt) => {
+  evt.preventDefault();
+  const item = {
+    name: cardNameInput.value,
+    link: cardLinkInput.value,
+  };
+  const newCard = createCard(item, removeCard, likeCard, handleCardImageClick);
+  placesList.prepend(newCard);
+  closeModal(newCardPopup);
+}
+
+newCardFormElement.addEventListener('submit', handleNewCardFormSubmit);
 

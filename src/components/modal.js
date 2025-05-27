@@ -1,9 +1,9 @@
 export function openModal(popupElement) {
-  popupElement.style.display = 'flex';
+  popupElement.classList.add('popup_is-opened');
 };
 
 export function closeModal(popupElement) {
-  popupElement.style.display = 'none';
+  popupElement.classList.remove('popup_is-opened');
 };
 
 
