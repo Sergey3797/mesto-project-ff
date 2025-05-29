@@ -1,6 +1,7 @@
 import '../pages/index.css';
-import {initialCards, createCard, removeCard, likeCard} from '../components/cards.js';
-import {openModal,closeModal } from '../components/modal.js';
+import {initialCards} from '../components/cards.js';
+import {openModal,closeModal} from '../components/modal.js';
+import {createCard, removeCard, likeCard} from '../components/card.js';
 
 const placesList = document.querySelector ('.places__list');
 const profilePopup = document.querySelector('#profile-popup');
@@ -80,19 +81,13 @@ imagePopup.addEventListener('click', (event) => {
   }
 });
 
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') {
-    closeModal(profilePopup);
-    closeModal(newCardPopup);
-    closeModal(imagePopup);
-  }
-});
-
 const handleProfileFormSubmit = (evt) => {
   evt.preventDefault(); 
   profileTitle.textContent = nameInput.value;
   profileDescription.textContent = jobInput.value;
   closeModal(profilePopup);
+  cardNameInput.value = '';
+  cardLinkInput.value = '';
 }
 
 profileFormElement.addEventListener('submit', handleProfileFormSubmit);
