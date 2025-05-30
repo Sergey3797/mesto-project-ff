@@ -86,8 +86,6 @@ const handleProfileFormSubmit = (evt) => {
   profileTitle.textContent = nameInput.value;
   profileDescription.textContent = jobInput.value;
   closeModal(profilePopup);
-  cardNameInput.value = '';
-  cardLinkInput.value = '';
 }
 
 profileFormElement.addEventListener('submit', handleProfileFormSubmit);
@@ -101,6 +99,8 @@ const handleNewCardFormSubmit = (evt) => {
   const newCard = createCard(item, removeCard, likeCard, handleCardImageClick);
   placesList.prepend(newCard);
   closeModal(newCardPopup);
+  cardNameInput.value = '';
+  cardLinkInput.value = '';
 }
 
 newCardFormElement.addEventListener('submit', handleNewCardFormSubmit);
