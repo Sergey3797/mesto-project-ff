@@ -2,6 +2,7 @@ import '../pages/index.css';
 import {initialCards} from '../components/cards.js';
 import {openModal,closeModal} from '../components/modal.js';
 import {createCard, removeCard, likeCard} from '../components/card.js';
+import {enableValidation} from './validation.js';
 
 const placesList = document.querySelector ('.places__list');
 const profilePopup = document.querySelector('#profile-popup');
@@ -105,3 +106,4 @@ const handleNewCardFormSubmit = (evt) => {
 
 newCardFormElement.addEventListener('submit', handleNewCardFormSubmit);
 
+enableValidation();
