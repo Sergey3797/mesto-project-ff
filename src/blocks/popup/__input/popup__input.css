@@ -14,7 +14,7 @@
   margin-bottom: 0;
 }
 
-.form__input_type_error {
+.popup__input_type_error{
   border-bottom-color: #ff0000;
 } 
 
@@ -26,7 +26,7 @@
   visibility: hidden;
 }
 
-.form__input-error_active {
+.popup__error_visible {
   visibility: visible;
 }
 

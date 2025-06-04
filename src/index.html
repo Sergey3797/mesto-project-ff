@@ -38,12 +38,22 @@
       <button type="button" class="popup__close" id="profile-popup-close-button"></button>
       <h3 class="popup__title">Редактировать профиль</h3>
       <form class="popup__form" name="edit-profile" novalidate>
-        <input type="text" id="name-input" name="name" class="popup__input popup__input_type_name" placeholder="Имя" minlength="2" maxlength="40" required>
+        <input
+         type="text" 
+         pattern="^[а-яА-Яa-zA-Z\-\s]+$" 
+         data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
+         id="name-input" 
+         name="name" 
+         class="popup__input popup__input_type_name" 
+         placeholder="Имя" 
+         minlength="2" 
+         maxlength="40" 
+         required>
         <span class="name-input-error form__input-error"></span>
         <input 
           type="text"
-          pattern="^[a-zA-Z]+$" 
-          data-error-message="Разрешены только латинские буквы"
+          pattern="^[а-яА-Яa-zA-Z\-\s]+$" 
+          data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
           id="description-input" 
           name="description" 
           class="popup__input popup__input_type_description" 
@@ -61,7 +71,17 @@
       <button type="button" class="popup__close" id="new-card-popup-close-button"></button>
       <h3 class="popup__title">Новое место</h3>
       <form class="popup__form" name="new-place" novalidate>
-        <input type="text" id="card-name-input" name="place-name" class="popup__input popup__input_type_card-name" placeholder="Название" minlength="2" maxlength="30" required>
+        <input 
+        type="text" 
+        pattern="^[а-яА-Яa-zA-Z\-\s]+$" 
+        data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
+        id="card-name-input" 
+        name="place-name" 
+        class="popup__input popup__input_type_card-name" 
+        placeholder="Название" 
+        minlength="2" 
+        maxlength="30" 
+        required>
         <span class="card-name-input-error form__input-error"></span>
         <input type="url" id="card-url-input" name="link" class="popup__input popup__input_type_url" placeholder="Ссылка на картинку" required>
         <span class="card-url-input-error form__input-error"></span>

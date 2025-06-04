@@ -2,7 +2,16 @@ import '../pages/index.css';
 import {initialCards} from '../components/cards.js';
 import {openModal,closeModal} from '../components/modal.js';
 import {createCard, removeCard, likeCard} from '../components/card.js';
-import {enableValidation} from './validation.js';
+import {enableValidation, clearValidation} from './validation.js';
+
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+};
 
 const placesList = document.querySelector ('.places__list');
 const profilePopup = document.querySelector('#profile-popup');
@@ -31,8 +40,6 @@ const handleCardImageClick = (link, caption, alt) => {
   openModal(imagePopup);
 }
 
-
-
 initialCards.forEach(function(item){
   const newCardElement = createCard(item, removeCard, likeCard, handleCardImageClick);
   placesList.append(newCardElement);
@@ -45,6 +52,7 @@ imagePopup.classList.add('popup_is-animated');
 editButton.addEventListener('click', () => {
   nameInput.value = profileTitle.textContent;
   jobInput.value = profileDescription.textContent;
+  clearValidation(profileFormElement, validationConfig);
   openModal(profilePopup);
 });
 
@@ -106,4 +114,4 @@ const handleNewCardFormSubmit = (evt) => {
 
 newCardFormElement.addEventListener('submit', handleNewCardFormSubmit);
 
-enableValidation();
+enableValidation(validationConfig); 
