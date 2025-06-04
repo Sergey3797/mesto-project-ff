@@ -66,6 +66,9 @@ profilePopupCloseButton.addEventListener('click', () => {
 
 newCardPopupCloseButton.addEventListener('click', () => {
   closeModal(newCardPopup);
+  clearValidation(newCardFormElement, validationConfig);
+  cardNameInput.value = '';
+  cardLinkInput.value = '';
 });
 
 imagePopupCloseButton.addEventListener('click', () => {
@@ -110,6 +113,7 @@ const handleNewCardFormSubmit = (evt) => {
   closeModal(newCardPopup);
   cardNameInput.value = '';
   cardLinkInput.value = '';
+  clearValidation(newCardFormElement, validationConfig);
 }
 
 newCardFormElement.addEventListener('submit', handleNewCardFormSubmit);
