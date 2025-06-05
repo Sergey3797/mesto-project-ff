@@ -6,7 +6,6 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Mesto</title>
-  <!-- <link rel="stylesheet" href="./pages/index.css"> -->
 </head>
 <body class="page">
 <div class="page__content">
@@ -15,7 +14,9 @@
   </header>
   <main class="content">
     <section class="profile page__section">
-      <div class="profile__image" id="profile-avatar" style="background-image: url(<%=require('./images/avatar.jpg')%>)"></div>
+      <div class="profile__image" id="profile-avatar" style="background-image: url(<%=require('./images/avatar.jpg')%>)">
+        <button class="profile__image-edit-button" type="button" id="image-edit-button"></button>
+      </div>
       <div class="profile__info">
         <h1 class="profile__title" id="profile-title">Жак-Ив Кусто</h1>
         <button class="profile__edit-button" type="button" id="edit-button"></button>
@@ -30,7 +31,7 @@
   </main>
   <footer class="footer page__section">
     <p class="footer__copyright">
-      © 2021 Mesto Russia
+      © 2025 Mesto Russia
     </p>
   </footer>
   <div class="popup popup_type_edit" id="profile-popup">
@@ -102,6 +103,17 @@
       <h3 class="popup__title">Вы уверены?</h3>
       <form class="popup__form" name="confirm-deletion">
         <button type="submit" class="button popup__button">Да</button>
+      </form>
+    </div>
+  </div>
+  <div class="popup popup_type_update-avatar" id="update-avatar-popup">
+    <div class="popup__content popup__content_one-field">
+      <button type="button" class="popup__close" id="update-avatar-popup-close-button"></button>
+      <h3 class="popup__title">Обновить аватар</h3>
+      <form class="popup__form" name="update-avatar" novalidate>
+        <input type="url" id="avatar-url-input" name="link" class="popup__input popup__input_type_url" placeholder="Ссылка на аватар" required>
+        <span class="avatar-url-input-error form__input-error"></span>
+        <button type="submit" class="button popup__button">Сохранить</button>
       </form>
     </div>
   </div>
