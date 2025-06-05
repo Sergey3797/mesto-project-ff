@@ -15,7 +15,7 @@
   </header>
   <main class="content">
     <section class="profile page__section">
-      <div class="profile__image" style="background-image: url(<%=require('./images/avatar.jpg')%>)"></div>
+      <div class="profile__image" id="profile-avatar" style="background-image: url(<%=require('./images/avatar.jpg')%>)"></div>
       <div class="profile__info">
         <h1 class="profile__title" id="profile-title">Жак-Ив Кусто</h1>
         <button class="profile__edit-button" type="button" id="edit-button"></button>
@@ -96,9 +96,16 @@
       <p class="popup__caption"></p>
     </div>
   </div>
+  <div class="popup popup_type_confirm-deletion" id="confirm-deletion-popup">
+    <div class="popup__content popup__content_confirm">
+      <button type="button" class="popup__close" id="confirm-deletion-popup-close-button"></button>
+      <h3 class="popup__title">Вы уверены?</h3>
+      <form class="popup__form" name="confirm-deletion">
+        <button type="submit" class="button popup__button">Да</button>
+      </form>
+    </div>
+  </div>
 </div>
-<!-- <script src="./scripts/cards.js"></script>
-<script src="./scripts/index.js" defer></script> -->
 
 <template id="card-template">
   <li class="places__item card">
@@ -107,7 +114,10 @@
     <div class="card__description">
       <h2 class="card__title">
       </h2>
-      <button type="button" class="card__like-button"></button>
+      <div class="card__like-container">
+        <button type="button" class="card__like-button"></button>
+        <span class="card__like-amount"></span>
+      </div>  
     </div>
   </li>
 </template>

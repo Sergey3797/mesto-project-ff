@@ -17,17 +17,28 @@ export const createCard = (dataCard, deleteCard, likeCard, clickImage) => {
   const cardTitle = cardElement.querySelector('.card__title');
   const deleteButton = cardElement.querySelector('.card__delete-button');
   const likeButton = cardElement.querySelector('.card__like-button');
+  const likesAmount = cardElement.querySelector('.card__like-amount');
 
   cardImage.src = dataCard.link;
   cardImage.alt = dataCard.name;
   cardTitle.textContent = dataCard.name;
+  likesAmount.textContent = dataCard.likesAmount;
+  cardElement.id = dataCard.id;
 
-  deleteButton.addEventListener('click', () => {
-    deleteCard(cardElement);
-  });
+  if (dataCard.isLiked) {
+    likeButton.classList.add('card__like-button_is-active');
+  }
 
+  if (dataCard.allowDelete) {
+    deleteButton.addEventListener('click', () => {
+     deleteCard(cardElement);
+    });
+  } else {
+    deleteButton.remove();
+  }
+  
   likeButton.addEventListener('click', () => {
-    likeCard(likeButton);
+    likeCard(likeButton, likesAmount, dataCard);
   });
 
   cardImage.addEventListener('click', () => {

@@ -3,6 +3,15 @@ import {initialCards} from '../components/cards.js';
 import {openModal,closeModal} from '../components/modal.js';
 import {createCard, removeCard, likeCard} from '../components/card.js';
 import {enableValidation, clearValidation} from './validation.js';
+import {
+  getUser,
+  getInitialCards,
+  updateUser,
+  addNewCard,
+  deleteCard,
+  addLikeToCard,
+  removeLikeFromCard
+} from './api.js';
 
 const validationConfig = {
   formSelector: '.popup__form',
@@ -17,12 +26,15 @@ const placesList = document.querySelector ('.places__list');
 const profilePopup = document.querySelector('#profile-popup');
 const newCardPopup = document.querySelector('#new-card-popup');
 const imagePopup = document.querySelector('#image-popup');
+const confirmDeletionPopup = document.querySelector('#confirm-deletion-popup');
 const editButton = document.querySelector('#edit-button');
 const addButton = document.querySelector('#add-button');
 const profilePopupCloseButton = document.querySelector('#profile-popup-close-button');
 const newCardPopupCloseButton = document.querySelector('#new-card-popup-close-button');
 const imagePopupCloseButton = document.querySelector('#image-popup-close-button');
+const confirmDeletionPopupCloseButton = document.querySelector('#confirm-deletion-popup-close-button');
 const profileTitle = document.querySelector('#profile-title');
+const profileAvatar = document.querySelector('#profile-avatar');
 const profileDescription = document.querySelector('#profile-description');
 const profileFormElement = profilePopup.querySelector('.popup__form');
 const nameInput = profilePopup.querySelector('.popup__input_type_name');
@@ -32,6 +44,57 @@ const cardNameInput = newCardPopup.querySelector('.popup__input_type_card-name')
 const cardLinkInput = newCardPopup.querySelector('.popup__input_type_url');
 const imagePopupImg = imagePopup.querySelector('.popup__image');
 const imagePopupCaption = imagePopup.querySelector('.popup__caption');
+const confirmDeletionFormElement = confirmDeletionPopup.querySelector('.popup__form');
+
+let userId = null;
+let cardToDelete = null;
+const userPromise = getUser();
+const initialCardsPromise = getInitialCards();
+
+userPromise.then((res) => {
+  profileTitle.textContent = res.name;
+  profileDescription.textContent = res.about;
+  profileAvatar.src = res.avatar;
+  userId = res._id;
+});
+
+const handleDeleteButtonClick = (element) => {
+  cardToDelete = element;
+  openModal(confirmDeletionPopup);
+}
+
+const handleLikeButtonClick = (buttonElement,likesAmountElement, cardData) => {
+  if (cardData.isLiked) {
+    removeLikeFromCard(cardData.id).then((res) => {
+      likesAmountElement.textContent = res.likes.length;
+    });
+  } else {
+    addLikeToCard(cardData.id).then((res) => {
+      likesAmountElement.textContent = res.likes.length;
+    })
+  }
+  likeCard(buttonElement);
+  cardData.isLiked = !cardData.isLiked;
+}
+
+Promise.all([userPromise, initialCardsPromise]).then(() => {
+  initialCardsPromise.then((res) => {
+    res.forEach((item) => {
+      const dataCard = {
+        link: item.link,
+        name: item.name,
+        id: item._id,
+        allowDelete: item.owner._id === userId,
+        likesAmount: item.likes.length,
+        isLiked: item.likes.some((like) => {
+          return like._id === userId;
+        })
+      }
+      const newCardElement = createCard(dataCard, handleDeleteButtonClick, handleLikeButtonClick, handleCardImageClick);
+      placesList.append(newCardElement);
+    })
+  })
+})
 
 const handleCardImageClick = (link, caption, alt) => {
   imagePopupImg.src = link;
@@ -40,14 +103,10 @@ const handleCardImageClick = (link, caption, alt) => {
   openModal(imagePopup);
 }
 
-initialCards.forEach(function(item){
-  const newCardElement = createCard(item, removeCard, likeCard, handleCardImageClick);
-  placesList.append(newCardElement);
-});
-
 profilePopup.classList.add('popup_is-animated');
 newCardPopup.classList.add('popup_is-animated');
 imagePopup.classList.add('popup_is-animated');
+confirmDeletionPopup.classList.add('popup_is-animated');
 
 editButton.addEventListener('click', () => {
   nameInput.value = profileTitle.textContent;
@@ -75,6 +134,10 @@ imagePopupCloseButton.addEventListener('click', () => {
   closeModal(imagePopup);
 });
 
+confirmDeletionPopupCloseButton.addEventListener('click',() => {
+  closeModal(confirmDeletionPopup);
+})
+
 profilePopup.addEventListener('click', (event) => {
   if (event.target === profilePopup) {
     closeModal(profilePopup);
@@ -93,10 +156,18 @@ imagePopup.addEventListener('click', (event) => {
   }
 });
 
+confirmDeletionPopup.addEventListener('click', (event) => {
+  if (event.target === confirmDeletionPopup) {
+    closeModal(confirmDeletionPopup);
+  }
+});
+
 const handleProfileFormSubmit = (evt) => {
   evt.preventDefault(); 
-  profileTitle.textContent = nameInput.value;
-  profileDescription.textContent = jobInput.value;
+  updateUser(nameInput.value, jobInput.value).then((res) => {
+    profileTitle.textContent = res.name;
+    profileDescription.textContent = res.about;
+  })
   closeModal(profilePopup);
 }
 
@@ -104,12 +175,21 @@ profileFormElement.addEventListener('submit', handleProfileFormSubmit);
 
 const handleNewCardFormSubmit = (evt) => {
   evt.preventDefault();
-  const item = {
-    name: cardNameInput.value,
-    link: cardLinkInput.value,
-  };
-  const newCard = createCard(item, removeCard, likeCard, handleCardImageClick);
-  placesList.prepend(newCard);
+  addNewCard(cardNameInput.value, cardLinkInput.value).then((res) => {
+    const dataCard = {
+      link: res.link,
+      name: res.name,
+      id: res._id,
+      allowDelete: res.owner._id === userId,
+      likesAmount: res.likes.length,
+      isLiked: res.likes.some((like) => {
+        return like._id === userId;
+      }) 
+    }
+    const newCard = createCard(dataCard, handleDeleteButtonClick, handleLikeButtonClick, handleCardImageClick);
+    placesList.prepend(newCard);
+  })
+  
   closeModal(newCardPopup);
   cardNameInput.value = '';
   cardLinkInput.value = '';
@@ -118,4 +198,17 @@ const handleNewCardFormSubmit = (evt) => {
 
 newCardFormElement.addEventListener('submit', handleNewCardFormSubmit);
 
+const handleConfirmDeletionFormSubmit = (evt) => {
+  evt.preventDefault();
+  if (cardToDelete) {
+    removeCard(cardToDelete);
+    deleteCard(cardToDelete.id);
+    cardToDelete = null;
+  }
+  closeModal(confirmDeletionPopup);
+}
+
+confirmDeletionFormElement.addEventListener('submit', handleConfirmDeletionFormSubmit);
+
 enableValidation(validationConfig); 
+
