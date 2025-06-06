@@ -32,6 +32,7 @@ const updateAvatarPopup = document.querySelector('#update-avatar-popup');
 const profilePopupSubmitButton = profilePopup.querySelector('.popup__button');
 const newCardPopupSubmitButton = newCardPopup.querySelector('.popup__button');
 const updateAvatarPopupSubmitButton = updateAvatarPopup.querySelector('.popup__button');
+const confirmDeletionSubmitButton = confirmDeletionPopup.querySelector('.popup__button');
 const editButton = document.querySelector('#edit-button');
 const addButton = document.querySelector('#add-button');
 const updateAvatarButton = document.querySelector('#image-edit-button');
@@ -57,17 +58,6 @@ const avatarLinkInput = updateAvatarPopup.querySelector('.popup__input_type_url'
 
 let userId = null;
 let cardToDelete = null;
-const userPromise = getUser();
-const initialCardsPromise = getInitialCards();
-
-userPromise.then((res) => {
-  profileTitle.textContent = res.name;
-  profileDescription.textContent = res.about;
-  profileAvatar.style.background = `url('${res.avatar}')`;
-  userId = res._id;
-}).catch((err) => {
-    console.log(err);
-  }); 
 
 const handleDeleteButtonClick = (element) => {
   cardToDelete = element;
@@ -78,23 +68,31 @@ const handleLikeButtonClick = (buttonElement,likesAmountElement, cardData) => {
   if (cardData.isLiked) {
     removeLikeFromCard(cardData.id).then((res) => {
       likesAmountElement.textContent = res.likes.length;
+      likeCard(buttonElement);
+      cardData.isLiked = !cardData.isLiked;
     }).catch((err) => {
       console.log(err);
     }); 
   } else {
     addLikeToCard(cardData.id).then((res) => {
       likesAmountElement.textContent = res.likes.length;
+      likeCard(buttonElement);
+      cardData.isLiked = !cardData.isLiked;
     }).catch((err) => {
       console.log(err);
     }); 
   }
-  likeCard(buttonElement);
-  cardData.isLiked = !cardData.isLiked;
 }
 
-Promise.all([userPromise, initialCardsPromise]).then(() => {
-  initialCardsPromise.then((res) => {
-    res.forEach((item) => {
+Promise.all([getUser(), getInitialCards()]).then((res) => {
+  const userData = res[0];
+  const initialCardsData = res[1];
+  profileTitle.textContent = userData.name;
+  profileDescription.textContent = userData.about;
+  profileAvatar.style.background = `url('${userData.avatar}')`;
+  userId = userData._id;
+
+  initialCardsData.forEach((item) => {
       const dataCard = {
         link: item.link,
         name: item.name,
@@ -108,8 +106,7 @@ Promise.all([userPromise, initialCardsPromise]).then(() => {
       const newCardElement = createCard(dataCard, handleDeleteButtonClick, handleLikeButtonClick, handleCardImageClick);
       placesList.append(newCardElement);
     })
-  })
-}).catch((err) => {
+}) .catch((err) => {
     console.log(err);
   }); 
 
@@ -134,10 +131,15 @@ editButton.addEventListener('click', () => {
 });
 
 addButton.addEventListener('click', () => {
+  cardNameInput.value = '';
+  cardLinkInput.value = '';
+  clearValidation(newCardFormElement, validationConfig);
   openModal(newCardPopup);
 });
 
 updateAvatarButton.addEventListener('click', () => {
+  avatarLinkInput.value = '';
+  clearValidation(updateAvatarFormElement, validationConfig);
   openModal(updateAvatarPopup);
 })
 
@@ -147,9 +149,6 @@ profilePopupCloseButton.addEventListener('click', () => {
 
 newCardPopupCloseButton.addEventListener('click', () => {
   closeModal(newCardPopup);
-  clearValidation(newCardFormElement, validationConfig);
-  cardNameInput.value = '';
-  cardLinkInput.value = '';
 });
 
 imagePopupCloseButton.addEventListener('click', () => {
@@ -162,8 +161,6 @@ confirmDeletionPopupCloseButton.addEventListener('click',() => {
 
 updateAvatarPopupCloseButton.addEventListener('click', () => {
   closeModal(updateAvatarPopup);
-  avatarLinkInput.value = '';
-  clearValidation(updateAvatarFormElement, validationConfig);
 });
 
 profilePopup.addEventListener('click', (event) => {
@@ -175,9 +172,6 @@ profilePopup.addEventListener('click', (event) => {
 newCardPopup.addEventListener('click' ,(event) => {
   if (event.target === newCardPopup) {
     closeModal(newCardPopup);
-    clearValidation(newCardFormElement, validationConfig);
-    cardNameInput.value = '';
-    cardLinkInput.value = '';
   }
 });
 
@@ -196,8 +190,6 @@ confirmDeletionPopup.addEventListener('click', (event) => {
 updateAvatarPopup.addEventListener('click', (event) => {
   if (event.target === updateAvatarPopup) {
     closeModal(updateAvatarPopup);
-    avatarLinkInput.value = '';
-    clearValidation(updateAvatarFormElement, validationConfig);
   }
 });
 
@@ -208,10 +200,11 @@ const handleProfileFormSubmit = (evt) => {
   updateUser(nameInput.value, jobInput.value).then((res) => {
     profileTitle.textContent = res.name;
     profileDescription.textContent = res.about;
-    profilePopupSubmitButton.textContent = submitButtonText;
     closeModal(profilePopup);
   }).catch((err) => {
     console.log(err);
+  }).finally(() => {
+    profilePopupSubmitButton.textContent = submitButtonText;
   }); 
 }
 
@@ -234,13 +227,14 @@ const handleNewCardFormSubmit = (evt) => {
     }
     const newCard = createCard(dataCard, handleDeleteButtonClick, handleLikeButtonClick, handleCardImageClick);
     placesList.prepend(newCard);
-    newCardPopupSubmitButton.textContent = submitButtonText;
     closeModal(newCardPopup);
     cardNameInput.value = '';
     cardLinkInput.value = '';
     clearValidation(newCardFormElement, validationConfig);
   }).catch((err) => {
     console.log(err);
+  }).finally(() => {
+    newCardPopupSubmitButton.textContent = submitButtonText;
   }); 
 }
 
@@ -248,12 +242,19 @@ newCardFormElement.addEventListener('submit', handleNewCardFormSubmit);
 
 const handleConfirmDeletionFormSubmit = (evt) => {
   evt.preventDefault();
+  const submitButtonText = confirmDeletionSubmitButton.textContent;
+  confirmDeletionSubmitButton.textContent = 'Удаление...';
   if (cardToDelete) {
-    removeCard(cardToDelete);
-    deleteCard(cardToDelete.id);
-    cardToDelete = null;
+    deleteCard(cardToDelete.id).then(() => {
+      removeCard(cardToDelete);
+      cardToDelete = null;
+      closeModal(confirmDeletionPopup);
+    }).catch((err) => {
+    console.log(err);
+  }).finally(() => {
+    confirmDeletionSubmitButton.textContent = submitButtonText;
+  }); ;
   }
-  closeModal(confirmDeletionPopup);
 }
 
 confirmDeletionFormElement.addEventListener('submit', handleConfirmDeletionFormSubmit);
@@ -264,13 +265,14 @@ const handleUpdateAvatarFormSubmit = (evt) => {
   updateAvatarPopupSubmitButton.textContent = 'Сохранение...';
   updateAvatar(avatarLinkInput.value).then((res) => {
     profileAvatar.style.background = `url('${res.avatar}')`;
-    updateAvatarPopupSubmitButton.textContent = submitButtonText;
     closeModal(updateAvatarPopup);
     avatarLinkInput.value = '';
     clearValidation(updateAvatarFormElement, validationConfig);
   }).catch((err) => {
     console.log(err);
-  }); 
+  }).finally(() => {
+    updateAvatarPopupSubmitButton.textContent = submitButtonText;
+  }); ; 
 }
 
 updateAvatarFormElement.addEventListener('submit', handleUpdateAvatarFormSubmit);
